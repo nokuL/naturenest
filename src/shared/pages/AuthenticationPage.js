@@ -6,6 +6,9 @@ import { useForm } from "../hooks/form-hooks";
 import './AuthPage.css';  
 import Card from "../../users/components/UIElements/Card";
 import { AuthContext } from "../context/authContext";
+import ErrorModal from "../../users/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../users/components/UIElements/LoadingSpinner";
+import { useHttpClient } from "../hooks/http-hooks";
 
 
 const AuthPage = props => {
@@ -23,6 +26,7 @@ const AuthPage = props => {
         false
     );
     const [isLogin, setIsLogin] = useState(false);
+    const {isLoading, error, sendRequest, clearError} = useHttpClient();
 
     const auth = useContext(AuthContext);
 
@@ -47,15 +51,56 @@ const AuthPage = props => {
         setIsLogin(prevMode => !prevMode)
     }
 
-    const authSubmitHandler = event => {
+    const authSubmitHandler = async event => {
         event.preventDefault();
-        console.log(formState.inputs); // Here you can send the data to your backend
-        auth.login();
+        if(isLogin){
+            try{
+
+           const responseData =  await sendRequest('http://localhost:5003/api/users/login', 'POST', {
+                'Content-Type':'application/json'
+            }, JSON.stringify({
+                name: formState.inputs.name.value, 
+                email: formState.inputs.email.value,
+                password: formState.inputs.password.value
+            }) );
+             
+            auth.login(responseData.user.id);
+            }catch(err){
+
+            }
+
+        }else{
+            try{
+
+               const responseData = await sendRequest('http://localhost:5003/api/users/signup','POST', 
+                    {
+                        'Content-Type':'application/json'
+                    },
+                    JSON.stringify({
+                        name: formState.inputs.name.value, 
+                        email: formState.inputs.email.value,
+                        password: formState.inputs.password.value
+                    })
+                );
+                
+                auth.login(responseData.user.id);
+            }catch(err){
+             
+
+            }
+        
+        }
+      
     };
+    const errorHandler = ()=>{
+        setError(null);
+    }
 
     return (
-        <div className="authentication">
+            <React.Fragment>
+                <ErrorModal error={error} onClear={errorHandler}></ErrorModal>
             <Card>
+                {isLoading && <LoadingSpinner asOverLay/>}
             <form  className="auth-form" onSubmit={authSubmitHandler}>
                 {!isLogin &&
                 ( <Input
@@ -93,14 +138,14 @@ const AuthPage = props => {
                 
                 <Button 
                     type="submit" 
-                    disabled={!formState.isValid}
-                >
+/*                     disabled={!formState.isValid}
+ */                >
                     {isLogin ? "Login" : "Sign Up"}
                 </Button>
                 <Button inverse onClick={switchLoginHanlder}>Switch to {isLogin ? 'Sign Up': 'Login'}</Button>
             </form>
             </Card>
-        </div>
+            </React.Fragment>
     );
 };
 

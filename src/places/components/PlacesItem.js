@@ -5,6 +5,7 @@ import Button from "../../shared/component/FormElements/Button";
 import Modal from "../../users/components/UIElements/Modal";
 import './PlacesItem.css';
 import { AuthContext } from '../../shared/context/authContext';
+import Map from '../../users/components/UIElements/Map';
 
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
@@ -35,7 +36,7 @@ const PlaceItem = props => {
         footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
       >
         <div className="map-container">
-          <h2>THE MAP!</h2>
+          <Map center={props.coordinates} zoom={16}></Map>
         </div>
       </Modal>
       <Modal show={showConfirmModal} onCancel={cancelDeleteWarningHandler} header="Are you sure?" footerClass="place-item__modal-actions" footer={
