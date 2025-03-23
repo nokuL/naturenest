@@ -5,7 +5,6 @@ import UserItem from "./UserItem";
 import Card from "./UIElements/Card";
 
 const UsersList = props =>{
-    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
     if(props.items.length === 0){
         return (<div className=".centre">

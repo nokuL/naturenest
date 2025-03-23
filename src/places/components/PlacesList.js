@@ -15,7 +15,7 @@ const PlacesList = props=>{
     }
     return <ul className="place-list">
         {props.items.map(place => <PlacesItem key={place.id} id={place.id}
-            image={place.imageUrl} title={place.title} description={place.description}
+            image={place.image} title={place.title} description={place.description}
             creatorId={place.creator} coordinates={place.location}
             address={place.address} />)}
 

@@ -1,41 +1,79 @@
-import React, {use, useContext} from "react";
+import React, { useContext } from "react";
 import { NavLink } from 'react-router-dom';
-import './NavLinks.css';
 import { AuthContext } from "../../context/authContext";
 
-
-
-const NavLinks = props =>{
-
+const NavLinks = props => {
     const auth = useContext(AuthContext);
+    
     return (
-        <ul className="nav-links">
+        <ul className="flex space-x-6 items-center text-sm font-medium text-mountain-dark">
             <li>
-                <NavLink to="/" exact>All Users</NavLink>
+                <div className="group">
+                <NavLink
+                    to="/"
+                    className="hover:text-sky transition-colors"
+                    activeClassName="text-forest"
+                >
+                    All Users
+                </NavLink>
+                <div className="mt-2 mx-2 duration-200 border-b-2 opacity-0 border-forest group-hover:opacity-100"></div>
+                </div>
             </li>
-            {auth.isLoggedIn &&  <li>
-                <NavLink to="/u1/places">My Places</NavLink>
-            </li> }
-            {
-               auth.isLoggedIn && <li>
-                {/* Updated to match route path */}
-                <NavLink to="/places/newPlace">Add Place</NavLink>
-            </li>
-
-            }
-           
-            {
-               ! auth.isLoggedIn &&
-               <li>
-                <NavLink to="/auth">Authenticate</NavLink>
-            </li>
-            }
-            {
-                auth.isLoggedIn && <li>
-                    <button onClick={auth.logout}>Logout</button>
+            {auth.isLoggedIn && (
+                <li>
+                    <div className="group">
+                    <NavLink
+                        to="/u1/places"
+                        className="hover:text-sky transition-colors"
+                        activeClassName="text-forest"
+                    >
+                        My Places
+                    </NavLink>
+                    <div className="mt-2 mx-2 duration-200 border-b-2 opacity-0 border-forest group-hover:opacity-100"></div>
+                    </div>
                 </li>
-            }
-            
+            )}
+            {auth.isLoggedIn && (
+                <li>
+                    <div className="group">
+                    <NavLink
+                        to="/places/newPlace"
+                        className="hover:text-sky transition-colors"
+                        activeClassName="text-forest"
+                    >
+                        Add Place
+                    </NavLink>
+                    <div className="mt-2 mx-2 border-b-2 opacity-0 border-forest group-hover:opacity-100"></div>
+                    </div>
+                </li>
+            )}
+            {!auth.isLoggedIn && (
+                <li>
+                    <div className="group">
+                    <NavLink
+                        to="/auth"
+                        className="hover:text-sky transition-colors"
+                        activeClassName="text-forest"
+                    >
+                        Authenticate
+                    </NavLink>
+                    <div className="mt-2 mx-2 duration-200 border-b-2 opacity-0 border-forest group-hover:opacity-100"></div>
+                    </div>
+                </li>
+            )}
+            {auth.isLoggedIn && (
+                <li>
+                    <div className="group">
+                    <button
+                        onClick={auth.logout}
+                        className="hover:text-sky transition-colors"
+                    >
+                        Logout
+                    </button>
+                    <div className="mt-2 mx-2 border-b-2 opacity-0 border-forest group-hover:opacity-100"></div>
+                    </div>
+                </li>
+            )}
         </ul>
     )
 }

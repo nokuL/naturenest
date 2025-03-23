@@ -1,5 +1,4 @@
 import React, {act, useReducer, useEffect} from "react";
-import './Input.css';
 import { validate } from "../../utils/Validators";
 
 
@@ -58,8 +57,11 @@ const Input = props => {
        placeholder={props.placeholder}
        value={inputState.value}
        onChange={onChangeHandler}
-       onBlur={touchHandler}/> 
-    : <textarea
+       onBlur={touchHandler} 
+       className={props.type === 'text'? 'w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:forest-light placeholder:text-sm placeholder:text-gray-400 placeholder:font-light' 
+        : 'w-full p-3 border border-gray-300 rounded-lg placeholder:text-sm placeholder:text-gray-400 placeholder:font-light focus:outline-none focus:ring-2 focus:forest-light'}
+     />
+       : <textarea
      id={props.id} 
      rows={props.rows || 3} 
      onChange={onChangeHandler}

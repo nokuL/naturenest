@@ -1,4 +1,4 @@
-import React , {useCallback, useEffect, useReducer, useContext} from "react";
+import React , {useCallback, useEffect, useReducer,useState, useContext} from "react";
 import Input from "../../shared/component/FormElements/Input";
 import Button from "../../shared/component/FormElements/Button";
 import './NewPlace.css';
@@ -8,6 +8,7 @@ import { AuthContext } from "../../shared/context/authContext";
 import ErrorModal from "../../users/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../users/components/UIElements/LoadingSpinner";
 import { useHistory } from "react-router-dom";
+import { useHttpClient } from "../../shared/hooks/http-hooks";
 
 
 const NewPlace = ()=>{

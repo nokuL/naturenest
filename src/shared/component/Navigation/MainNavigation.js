@@ -1,10 +1,8 @@
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
-import MainHeader from "./MainHeader";
 import NavLinks from "./NavLinks";
-import './MainNavigation.css';
 import SideDrawer from "./SideDrawer";
 import Backdrop from "../../../users/components/UIElements/Backdrop";
+import naturenest from '../../../assets/images/naturenest.png';
 
 const MainNavigation = props => {
 
@@ -24,8 +22,20 @@ const MainNavigation = props => {
                 <NavLinks/>
             </nav>
         </SideDrawer>
+        {/* <--main nav bar--> */}
+        <div className="fixed top-0 left-0 w-full shadow-md z-50 bg-white flex flex-row items-center justify-between px-8 py-3">
+    {/* Left section - "Your Spaces" */}
+    <div className="flex items-center space-x-4">
+        <img src={naturenest} alt="logo" className="w-20 h-30 rounded-full mb-4"/>
+    </div>
+
+    {/* Right section - Navigation links */}
+    <div className="flex items-center space-x-6">
+        <NavLinks />
+    </div>
+</div>
         
-    <MainHeader>
+    {/* <MainHeader>
         <button className="main-navigation__menu-btn" onClick={openDrawer}> 
             <span></span>
             <span></span>
@@ -39,7 +49,7 @@ const MainNavigation = props => {
             <NavLinks></NavLinks>
         </nav>
 
-    </MainHeader>
+    </MainHeader> */}
     </React.Fragment>);
     
 }
