@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { Link } from "react-router-dom";
 import NavLinks from "./NavLinks";
 import SideDrawer from "./SideDrawer";
 import Backdrop from "../../../users/components/UIElements/Backdrop";
@@ -26,13 +27,23 @@ const MainNavigation = props => {
         <div className="fixed top-0 left-0 w-full shadow-md z-50 bg-white flex flex-row items-center justify-between px-8 py-3">
     {/* Left section - "Your Spaces" */}
     <div className="flex items-center space-x-4">
-        <img src={naturenest} alt="logo" className="w-20 h-30 rounded-full mb-4"/>
+        <img src={naturenest} alt="logo" className="w-20 h-20 rounded-full mb-4"/>
     </div>
 
     {/* Right section - Navigation links */}
-    <div className="flex items-center space-x-6">
+    <div className="hidden md:flex items-center space-x-6">
         <NavLinks />
     </div>
+
+    {/* Hamburger button for mobile */}
+    <button
+        className="md:hidden flex flex-col space-y-1"
+        onClick={openDrawer}
+    >
+        <span className="block w-6 h-0.5 bg-gray-600"></span>
+        <span className="block w-6 h-0.5 bg-gray-600"></span>
+        <span className="block w-6 h-0.5 bg-gray-600"></span>
+    </button>
 </div>
         
     {/* <MainHeader>
