@@ -4,8 +4,9 @@ import PlacesItem from "./PlacesItem";
 
 
 const PlacesList = props=>{
+    console.log("PlacesList >>>>>>>>>>>>>", props.items);
 
-    if (props.items.length === 0) {
+    if (!props.items || props.items.length === 0) {
         return <div className="place-list center">
             <Card>
                 <h2>No Places found. Maybe create one ?</h2>

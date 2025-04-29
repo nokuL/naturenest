@@ -15,7 +15,6 @@ import { useHttpClient } from "../../shared/hooks/http-hooks.js";
       try{
         const responseData = await sendRequest('http://localhost:5003/api/users');
         setLoadesUsers(responseData.users);
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+ responseData.users);
 
       }catch(err){
 

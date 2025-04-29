@@ -1,78 +1,62 @@
-
-
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Users from './users/pages/Users';
 import NewPlace from './places/components/NewPlace';
-import MainNavigation from './shared/component/Navigation/MainNavigation';
 import UserPlaces from './places/pages/UserPlaces';
 import UpdatePlace from './places/components/UpdatePlace';
-import AuthPage from './shared/pages/AuthenticationPage';
 import { AuthContext } from './shared/context/authContext';
-import { use, useCallback, useState, useEffect } from 'react';
-import { useHttpClient } from './shared/hooks/http-hooks';
 import Home from './home/home';
 import Footer from './shared/component/Navigation/Footer';
+import SignUp from './shared/pages/SignUp';
+import { useAuth } from './shared/hooks/auth-hook';
+import UserFeed from './shared/pages/userFeed/UserFeed';
+
 function App() {
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState(null);
-  const {isLoading, error, sendRequest, clearError} = useHttpClient();
-
-  const login = useCallback((uid)=>{
-    setIsLoggedIn(true);
-    setUserId(uid);
-  })
-
-  const logout = useCallback(()=>{
-    setIsLoggedIn(false);
-    setUserId(null);
-  });
-
-  useEffect(()=>{
-
-    const user = async()=>{
-      await sendRequest('http://auth/login/success', 'GET', null, {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${window.location.search.split('=')[1]}`
-      });
-    }
-
-  })
-
+  const { token, login, logout, userId } = useAuth();
+  
   let routes;
-  if(isLoggedIn){
-    routes =
-    <Switch>
-    <Route path="/" exact component={Home} />
-    <Route path="/:userId/places" exact component={UserPlaces}></Route>
-    <Route path="/auth" exact component={Home} /> 
-    <Route path="/places/newPlace" exact component={NewPlace} />
-    <Route path="/places/:placeId" exact component={UpdatePlace}/>
-    <Redirect to ="/"/>
-
- </Switch>
-
-  }else{
+  
+  if (token) {
     routes = (
       <Switch>
-         <Route path="/" exact component={Home} />
-         <Route path="/:userId/places" exact component={UserPlaces}></Route>
-         <Route path="/auth" exact component={Home} /> 
-         <Redirect to ="/auth"/>
+        <Route path="/" exact component={Home} />
+        <Route path="/:userId/places" exact component={UserPlaces} />
+        <Route path="/auth" exact component={Home} /> 
+        <Route path="/places/newPlace" exact component={NewPlace} />
+        <Route path="/places/:placeId" exact component={UpdatePlace} />
+        <Route path="/places/:placeId" exact component={UpdatePlace} />
+        <Route path="/userFeed/:userId" exact component={UserFeed} />
+        <Redirect to="/" />
       </Switch>
-    )
+    );
+  } else {
+    routes = (
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/:userId/places" exact component={UserPlaces} />
+        <Route path="/auth" exact component={Home} /> 
+        <Route path="/signup" exact component={SignUp} />
+        <Redirect to="/auth" />
+      </Switch>
+    );
   }
+  
   return (
-//<AuthContext.Provider value={{isLoggedIn : isLoggedIn, userId: userId, login: login, logout: logout}}>
-    <Router>
-    <MainNavigation />
-    <main>
-           {routes}
-        
-    </main>
-    <Footer />
-</Router>
-//</AuthContext.Provider>
+    <AuthContext.Provider 
+      value={{ 
+        isLoggedIn: !!token, 
+        token: token, 
+        userId: userId, 
+        login: login, 
+        logout: logout 
+      }}
+    >
+      <Router>
+        <main>
+          {routes}
+        </main>
+        <Footer />
+      </Router>
+    </AuthContext.Provider>
   );
 }
 

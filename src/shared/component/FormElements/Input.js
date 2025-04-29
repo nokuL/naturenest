@@ -58,8 +58,8 @@ const Input = props => {
        value={inputState.value}
        onChange={onChangeHandler}
        onBlur={touchHandler} 
-       className={props.type === 'text'? 'w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:forest-light placeholder:text-sm placeholder:text-gray-400 placeholder:font-light' 
-        : 'w-full p-3 border border-gray-300 rounded-lg placeholder:text-sm placeholder:text-gray-400 placeholder:font-light focus:outline-none focus:ring-2 focus:forest-light'}
+       className={props.type === 'text'? 'w-full p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:forest-light placeholder:text-sm placeholder:text-gray-400 placeholder:font-light' 
+        : 'w-full p-1 border border-gray-300 rounded-lg placeholder:text-sm placeholder:text-gray-400 placeholder:font-light focus:outline-none focus:ring-2 focus:forest-light'}
      />
        : <textarea
      id={props.id} 

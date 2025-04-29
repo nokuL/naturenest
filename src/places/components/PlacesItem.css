@@ -1,60 +1,117 @@
 .place-item {
-  margin: 1rem 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .place-item__content {
   padding: 0;
-}
-
-.place-item__info {
-  padding: 1rem;
-  text-align: center;
+  overflow: hidden;
 }
 
 .place-item__image {
-  width: 100%;
-  height: 12.5rem;
-  margin-right: 1.5rem;
+  position: relative;
 }
 
 .place-item__image img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.place-item__info h2,
-.place-item__info h3,
-.place-item__info p {
-  margin: 0 0 0.5rem 0;
+.place-item__info {
+  padding: 1rem;
 }
 
 .place-item__actions {
   padding: 1rem;
   text-align: center;
-  border-top: 1px solid #ccc;
-}
-
-.place-item__modal-content {
-  padding: 0;
-}
-
-.place-item__modal-actions {
-  text-align: right;
-}
-
-.place-item__actions button,
-.place-item__actions a {
-  margin: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 .map-container {
-  height: 15rem;
+  height: 20rem;
   width: 100%;
+  overflow: hidden;
+  border-radius: 0.5rem;
 }
 
+/* Custom theme classes */
+.place-item__badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(93, 158, 202, 0.1);
+  color: #4A7FA3;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-left: auto;
+}
+
+.place-item__address {
+  display: flex;
+  align-items: center;
+  color: #67727E;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.place-item__address svg {
+  margin-right: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.place-item__description {
+  color: #505A64;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.place-item__title {
+  color: #173D23;
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+/* Animation classes */
+.place-item__hover-effect {
+  transition: all 0.3s ease;
+}
+
+.place-item__hover-effect:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive styles */
 @media (min-width: 768px) {
+  .place-item__content {
+    display: flex;
+    flex-direction: row;
+  }
+
   .place-item__image {
-    height: 20rem;
-  } 
+    width: 40%;
+    flex-shrink: 0;
+  }
+
+  .place-item__info-wrapper {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .place-item__actions {
+    justify-content: flex-start;
+    margin-top: auto;
+  }
 }

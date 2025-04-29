@@ -9,6 +9,7 @@ import LoadingSpinner from "../../users/components/UIElements/LoadingSpinner";
 import { useHttpClient } from "../hooks/http-hooks";
 import google from '../../assets/images/google.png';
 import facebook from '../../assets/images/facebook.png';
+import { useHistory } from "react-router-dom";
 
 
 const AuthPage = props => {
@@ -29,6 +30,7 @@ const AuthPage = props => {
     const {isLoading, error, sendRequest, clearError} = useHttpClient();
 
     const auth = useContext(AuthContext);
+    const history = useHistory();
 
 
     const switchLoginHanlder = ()=>{
@@ -52,44 +54,26 @@ const AuthPage = props => {
     }
 
     const authSubmitHandler = async event => {
-        event.preventDefault();
-        if(isLogin){
+        event.preventDefault();        
             try{
 
-           const responseData =  await sendRequest('http://localhost:5003/api/users/login', 'POST', {
+           const responseData =  await sendRequest('http://localhost:5000/api/users/login', 'POST', {
                 'Content-Type':'application/json'
             }, JSON.stringify({
-                name: formState.inputs.name.value, 
                 email: formState.inputs.email.value,
                 password: formState.inputs.password.value
             }) );
+
+            console.log(">>>>>>>>> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! "+responseData)
              
-            auth.login(responseData.user.id);
+            auth.login(responseData.user.id, responseData.token);
+
+            history.push(`userFeed/${responseData.user.userId}`);
+
             }catch(err){
+                console.log(err)
 
             }
-
-        }else{
-            try{
-
-               const responseData = await sendRequest('http://localhost:5003/api/users/signup','POST', 
-                    {
-                        'Content-Type':'application/json'
-                    },
-                    JSON.stringify({
-                        name: formState.inputs.name.value, 
-                        email: formState.inputs.email.value,
-                        password: formState.inputs.password.value
-                    })
-                );
-                
-                auth.login(responseData.user.id);
-            }catch(err){
-             
-
-            }
-        
-        }
       
     };
 
@@ -148,13 +132,13 @@ const AuthPage = props => {
             class="flex flex-col space-x-0 space-y-6 md:flex-row md:space-x-4 md:space-y-0"
           >
             <button
-              class="flex items-center justify-center py-2 space-x-2 border border-gray-300 rounded shadow-sm hover:bg-opacity-30 hover:shadow-lg hover:-translate-y-0.5 transition duration-150 md:w-1/2"
+              class="flex items-center justify-center py-2 px-4 space-x-2 border border-gray-300 rounded shadow-sm hover:bg-opacity-30 hover:shadow-lg hover:-translate-y-0.5 transition duration-150 md:w-1/2"
             >
               <img src={facebook} alt="" class="w-9" />
               <span class="font-thin">Facebook</span>
             </button>
             <button
-              class="flex items-center justify-center py-2 space-x-3 border border-gray-300 rounded shadow-sm hover:bg-opacity-30 hover:shadow-lg hover:-translate-y-0.5 transition duration-150 md:w-1/2"
+              class="flex items-center justify-center py-2 px-4 space-x-3 border border-gray-300 rounded shadow-sm hover:bg-opacity-30 hover:shadow-lg hover:-translate-y-0.5 transition duration-150 md:w-1/2"
             >
               <img src={google} alt="" class="w-9" />
               <span class="font-thin">Google</span>
