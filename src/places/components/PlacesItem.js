@@ -7,7 +7,6 @@ import Map from '../../users/components/UIElements/Map';
 import { useHttpClient } from '../../shared/hooks/http-hooks';
 import mountainView from '../../assets/images/beautiful-background-td7gsxerv3ecl20h.jpg';
 
-import './PlacesItem.css';
 
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);

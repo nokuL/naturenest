@@ -24,7 +24,6 @@ function UserFeed() {
         address: '123 Test Street'
     }];
     
-    console.log("#################################### running the userfeed");
     
     useEffect(() => {
         async function fetchPlaces() {
