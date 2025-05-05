@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useContext } from 'react';
 
 import PlacesList from '../../../places/components/PlacesList';
@@ -7,12 +7,16 @@ import { AuthContext } from '../../../shared/context/authContext';
 import { useHttpClient } from '../../../shared/hooks/http-hooks';
 import ErrorModal from '../../../users/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../../users/components/UIElements/LoadingSpinner';
+import AddPlaceModal from './AddPlaceModal';
 function UserFeed() {
     const [places, setPlaces] = useState([]);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const auth = useContext(AuthContext);
     const userId = useParams().userId;
     const token = auth.token;
+    const history = useHistory();
+    const [showModal, setShowModal] = useState(false); 
+
 
     const Dummy_Places = [{
         id: '1',
@@ -23,7 +27,34 @@ function UserFeed() {
         location: { lat: 0, lng: 0 },
         address: '123 Test Street'
     }];
+
+    const handleNewPlace = () => {
+        setShowModal(true); // Show modal instead of redirecting
+    };
     
+    const handleAddPlace = async (placeData) => {
+        try {
+            const formData = new FormData();
+            formData.append('title', placeData.title);
+            formData.append('description', placeData.description);
+            formData.append('address', placeData.address);
+            formData.append('image', placeData.image);
+            
+            const responseData = await sendRequest(
+                'http://localhost:5000/api/places',
+                'POST',
+                formData,
+                {
+                    Authorization: 'Bearer ' + auth.token
+                }
+            );
+            
+            setPlaces(prevPlaces => [responseData.place, ...prevPlaces]);
+            setShowModal(false);
+        } catch (err) {
+            console.error('Error adding place:', err);
+        }
+    };
     
     useEffect(() => {
         async function fetchPlaces() {
@@ -41,6 +72,11 @@ function UserFeed() {
         <React.Fragment>
             <ErrorModal error={error} onClear={clearError} />
             {isLoading && <LoadingSpinner asOverLay />}
+            <AddPlaceModal 
+                show={showModal} 
+                onClose={() => setShowModal(false)} 
+                onSubmit={handleAddPlace} 
+            />
             
             {/* Main container with responsive flexbox grid */}
             <div className="container mx-auto px-4 py-6 bg-gray-50">
@@ -87,7 +123,7 @@ function UserFeed() {
                                     <p className="text-sm text-mountain">@user_handle</p>
                                 </div>
                             </div>
-                            <button className="w-full bg-forest text-white py-2 rounded-md hover:bg-forest-light transition-colors">
+                            <button onClick={handleNewPlace} className="w-full bg-forest text-white py-2 rounded-md hover:bg-forest-light transition-colors">
                                 Add New Place
                             </button>
                         </div>
