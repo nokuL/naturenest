@@ -1,22 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from "react-router-dom";
-import { useContext } from 'react';
+import React, { useState, useRef } from 'react';
 
-import PlacesList from '../../../places/components/PlacesList';
-import { AuthContext } from '../../../shared/context/authContext';
-import { useHttpClient } from '../../../shared/hooks/http-hooks';
-import ErrorModal from '../../../users/components/UIElements/ErrorModal';
-import LoadingSpinner from '../../../users/components/UIElements/LoadingSpinner';
 
 const AddPlaceModal = ({ show, onClose, onSubmit }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('');
   const [image, setImage] = useState(null);
+  const fileInputRef = useRef(null);
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Check if form is valid
+    if (!title || !description || !address || !image) {
+     console.error('Please fill all fields and select an image');
+      return;
+    }
+    
+    // Log the data before submitting to verify
+    console.log('Form data before submission:', {
+      title,
+      description,
+      address, 
+      image: image ? {
+        name: image.name,
+        type: image.type,
+        size: image.size
+      } : 'No image'
+    });
+    
+    // Submit form data to parent component
     onSubmit({ title, description, address, image });
+    
+    // Reset form after submission
     resetForm();
   };
 
@@ -25,6 +43,10 @@ const AddPlaceModal = ({ show, onClose, onSubmit }) => {
     setDescription('');
     setAddress('');
     setImage(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
   };
 
   if (!show) return null;
@@ -82,7 +104,9 @@ const AddPlaceModal = ({ show, onClose, onSubmit }) => {
             <label className="block text-forest-dark mb-1">Image</label>
             <input
               type="file"
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={(e) =>{ 
+                console.log("&&&&&&&&&&&&&&&&&&&&&&&&&"+e.target.files[0]);
+                setImage(e.target.files[0])}}
               className="w-full p-2 border border-mountain/30 rounded"
               accept="image/*"
             />

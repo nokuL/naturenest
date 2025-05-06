@@ -5,7 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      
+      animation: {
+        'fade-in': 'fadeIn 0.3s ease-out forwards',
+      },
         colors: {
           'forest': {
             DEFAULT: '#1F4D2C',
@@ -23,9 +25,17 @@ module.exports = {
             dark: '#4A7FA3',
           }
         
-      }
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
     },
   },
   plugins: [],
 }
+
+
 

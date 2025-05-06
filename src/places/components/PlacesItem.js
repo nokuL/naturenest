@@ -47,7 +47,8 @@ const PlaceItem = props => {
         header={props.title}
         contentClass="place-item__modal-content"
         footerClass="place-item__modal-actions"
-        footer={<Button onClick={closeMapHandler} className="bg-mountain text-white hover:bg-mountain-light">CLOSE</Button>}
+        footer={<button onClick={closeMapHandler}   className="px-4 py-2 rounded-md bg-forest text-white font-medium hover:bg-forest-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
+>CLOSE</button>}
       >
         <div className="map-container h-64 rounded-md overflow-hidden">
           <Map center={props.coordinates} zoom={16}></Map>
@@ -62,10 +63,12 @@ const PlaceItem = props => {
         footerClass="place-item__modal-actions"
         footer={
           <React.Fragment>
-            <Button onClick={cancelDeleteWarningHandler} className="bg-gray-200 text-mountain-dark hover:bg-gray-300 mr-2">CANCEL</Button>
-            <Button onClick={confirmDeleteHandler} disabled={isLoading} className="bg-red-500 text-white hover:bg-red-600">
+            <button onClick={cancelDeleteWarningHandler}  className="px-4 py-2 rounded-md bg-forest text-white font-medium hover:bg-forest-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
+            >CANCEL</button>
+            <button onClick={confirmDeleteHandler} disabled={isLoading} className="px-4 py-2 rounded-md bg-red-500 text-white font-medium hover:bg-red-600 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
+            >
               {isLoading ? 'DELETING...' : 'DELETE'}
-            </Button>
+            </button>
           </React.Fragment>
         }
       >
@@ -88,7 +91,8 @@ const PlaceItem = props => {
             <div className="place-item__image w-full">
               <div className="relative h-96 overflow-hidden">
                 <img 
-                  src={mountainView}
+                  src={
+                   `http://localhost:5000/${props.image}` || mountainView}
                   alt={props.title}
                   className="absolute h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                 />
@@ -157,41 +161,41 @@ const PlaceItem = props => {
                 </div>
                 
                 {auth.isLoggedIn && (
-                  <div className="flex gap-2">
-                    <Button 
+                  <div className="flex gap-3">
+                    <button 
                       to={`/places/${props.id}`}
-                      className="bg-forest text-white hover:bg-forest-light transition-colors flex items-center"
-                    >
+                      className="px-4 py-2 rounded-md bg-forest text-white font-medium hover:bg-forest-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
+                      >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                       </svg>
                       EDIT
-                    </Button>
+                    </button>
                     
-                    <Button 
+                    <button 
                       onClick={showDeleteWarningHandler}
-                      className="bg-red-500 text-white hover:bg-red-600 transition-colors flex items-center"
-                    >
+                      className="px-4 py-2 rounded-md bg-forest text-white font-medium hover:bg-forest-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
+                      >
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                       </svg>
                       DELETE
-                    </Button>
+                    </button>
                   </div>
                 )}
               </div>
               
               {/* View on Map button - Larger, more prominent */}
               <div className="px-5 pb-4">
-                <Button 
+                <button 
                   onClick={openMapHandler} 
-                  className="w-full bg-sky text-white hover:bg-sky-light transition-colors flex items-center justify-center py-3"
-                >
+                  className="w-full px-6 py-3 rounded-md bg-sky text-white font-semibold tracking-wide hover:bg-sky-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center justify-center"
+                  >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
                   </svg>
                   VIEW ON MAP
-                </Button>
+                </button>
               </div>
             </div>
           </div>
