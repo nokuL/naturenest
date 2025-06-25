@@ -9,6 +9,7 @@ import Footer from './shared/component/Navigation/Footer';
 import SignUp from './shared/pages/SignUp';
 import { useAuth } from './shared/hooks/auth-hook';
 import UserFeed from './shared/pages/userFeed/UserFeed';
+import UserProfile from './users/components/UserProfile';
 
 function App() {
   const { token, login, logout, userId } = useAuth();
@@ -25,6 +26,7 @@ function App() {
         <Route path="/places/:placeId" exact component={UpdatePlace} />
         <Route path="/places/:placeId" exact component={UpdatePlace} />
         <Route path="/userFeed/:userId" exact component={UserFeed} />
+        <Route path="/users/profile/:userId" exact component={UserProfile} />
         <Redirect to="/" />
       </Switch>
     );

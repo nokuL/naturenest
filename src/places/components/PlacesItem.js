@@ -11,11 +11,22 @@ import mountainView from '../../assets/images/beautiful-background-td7gsxerv3ecl
 const PlaceItem = props => {
   const [showMap, setShowMap] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
   
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
   const showDeleteWarningHandler = () => setShowConfirmModal(true);
   const cancelDeleteWarningHandler = () => setShowConfirmModal(false);
+  
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
+  
+  const handleImageError = () => {
+    setImageLoading(false);
+    setImageError(true);
+  };
   
   const auth = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -63,12 +74,15 @@ const PlaceItem = props => {
         footerClass="place-item__modal-actions"
         footer={
           <React.Fragment>
+            <div className="flex flex-row gap-2 justify-center">
             <button onClick={cancelDeleteWarningHandler}  className="px-4 py-2 rounded-md bg-forest text-white font-medium hover:bg-forest-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
             >CANCEL</button>
-            <button onClick={confirmDeleteHandler} disabled={isLoading} className="px-4 py-2 rounded-md bg-red-500 text-white font-medium hover:bg-red-600 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
+            <button onClick={confirmDeleteHandler} disabled={isLoading} 
+            className="px-4 py-2 rounded-md bg-red-500 text-white font-medium hover:bg-red-600 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
             >
               {isLoading ? 'DELETING...' : 'DELETE'}
             </button>
+            </div>
           </React.Fragment>
         }
       >
@@ -90,11 +104,30 @@ const PlaceItem = props => {
             {/* Image Section - Full width like social media */}
             <div className="place-item__image w-full">
               <div className="relative h-96 overflow-hidden">
+                {/* Loading Spinner */}
+                {imageLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+                    <div className="h-10 w-10 animate-spin rounded-full border-4 border-mountain border-t-forest"></div>
+                  </div>
+                )}
+                
+                {/* Error State */}
+                {imageError && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50 z-10">
+                    <svg className="w-16 h-16 text-mountain" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <p className="mt-2 text-mountain-dark">Failed to load image</p>
+                  </div>
+                )}
+                
+                {/* Image with smooth transition */}
                 <img 
-                  src={
-                   `http://localhost:5000/${props.image}` || mountainView}
+                  src={props.image} 
                   alt={props.title}
-                  className="absolute h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                  className={`absolute h-full w-full object-cover transition-all duration-500 hover:scale-105 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
                 />
               </div>
             </div>
@@ -161,42 +194,33 @@ const PlaceItem = props => {
                 </div>
                 
                 {auth.isLoggedIn && (
-                  <div className="flex gap-3">
+                  <div className="flex gap-4">
                     <button 
                       to={`/places/${props.id}`}
-                      className="px-4 py-2 rounded-md bg-forest text-white font-medium hover:bg-forest-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
-                      >
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      className="text-mountain hover:text-forest flex items-center transition-colors" 
+                      title="Edit Place"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                       </svg>
-                      EDIT
                     </button>
                     
                     <button 
                       onClick={showDeleteWarningHandler}
-                      className="px-4 py-2 rounded-md bg-forest text-white font-medium hover:bg-forest-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center"
-                      >
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      className="text-mountain hover:text-red-500 flex items-center transition-colors"
+                      
+                      title="Delete Place"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                       </svg>
-                      DELETE
                     </button>
                   </div>
                 )}
               </div>
               
-              {/* View on Map button - Larger, more prominent */}
-              <div className="px-5 pb-4">
-                <button 
-                  onClick={openMapHandler} 
-                  className="w-full px-6 py-3 rounded-md bg-sky text-white font-semibold tracking-wide hover:bg-sky-light transition-all duration-300 transform hover:-translate-y-0.5 shadow-md hover:shadow-lg flex items-center justify-center"
-                  >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                  </svg>
-                  VIEW ON MAP
-                </button>
-              </div>
+            {/*   {/* View on Map button - Larger, more prominent */}
+            
             </div>
           </div>
         </Card>
