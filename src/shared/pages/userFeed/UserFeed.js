@@ -187,7 +187,7 @@ function UserFeed() {
 
                         {/* Simplified rendering of places */}
                         <div className="my-4">
-                            <PlacesList items={places} onDelete={handleDelete} />
+                            <PlacesList items={places} onDelete={handleDelete} fetchPlaces={fetchPlaces}/>
                         </div>
                     </div>
 

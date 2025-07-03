@@ -48,8 +48,8 @@ const FeedbackPopup = ({ message, type, visible, onClose, timeout = 3000 }) => {
     <>
         <style>{fadeInKeyframes}</style>
 
-    <div className="fixed bottom-6 right-6 z-50 animate-fade-in">
-      <div className={`${getStylesByType()} px-4 py-3 rounded-lg shadow-lg border flex items-center max-w-md`}>
+        <div className="fixed top-6 right-6 z-50 animate-fade-in">
+        <div className={`${getStylesByType()} px-4 py-3 rounded-lg shadow-lg border flex items-center max-w-md`}>
         {/* Icon based on type */}
         <div className="mr-3">
           {type === 'success' && (

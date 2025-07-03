@@ -24,7 +24,6 @@ function App() {
         <Route path="/auth" exact component={Home} /> 
         <Route path="/places/newPlace" exact component={NewPlace} />
         <Route path="/places/:placeId" exact component={UpdatePlace} />
-        <Route path="/places/:placeId" exact component={UpdatePlace} />
         <Route path="/userFeed/:userId" exact component={UserFeed} />
         <Route path="/users/profile/:userId" exact component={UserProfile} />
         <Redirect to="/" />

@@ -1,11 +1,14 @@
 import React, { useState, useContext } from 'react';
+import { useParams } from 'react-router-dom';
 import Card from "../../users/components/UIElements/Card";
 import Button from "../../shared/component/FormElements/Button";
 import Modal from "../../users/components/UIElements/Modal";
 import { AuthContext } from '../../shared/context/authContext';
 import Map from '../../users/components/UIElements/Map';
 import { useHttpClient } from '../../shared/hooks/http-hooks';
+import EditPlaceModal from '../../shared/pages/userFeed/EditPlaceModal';
 import mountainView from '../../assets/images/beautiful-background-td7gsxerv3ecl20h.jpg';
+import FeedbackPopup from '../../shared/component/Feedback/Feedback';
 
 
 const PlaceItem = props => {
@@ -13,6 +16,15 @@ const PlaceItem = props => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+      const userId = useParams().userId;
+  
+     const [feedback, setFeedback] = useState({
+          visible: false,
+          message: '',
+          type: 'success'
+      });
+
   
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
@@ -27,9 +39,74 @@ const PlaceItem = props => {
     setImageLoading(false);
     setImageError(true);
   };
+  const showFeedback = (message, type = 'success') => {
+    setFeedback({
+        visible: true,
+        message,
+        type
+    });
+};
+
+const closeFeedback = () => {
+    setFeedback(prev => ({
+        ...prev,
+        visible: false
+    }));
+};
   
   const auth = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+  const handleEditPlaceModalSHow = () => {
+    setShowEditModal(true);
+  }
+
+
+  const handleEditPlace = async (placeData) => {
+    try {
+        console.log('PlaceData received from modal%%%%%%%%%%%%%%%%%%:', placeData);
+        
+        // Validate required fields
+        if (!placeData.title || !placeData.description || !placeData.address) {
+            console.error('Missing required fields');
+            showFeedback('Please fill in all required fields', 'error');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('title', placeData.title);
+        formData.append('description', placeData.description);
+        formData.append('address', placeData.address);
+        
+        // Only append image if a new one is provided
+        if (placeData.image && placeData.image instanceof File) {
+            formData.append('image', placeData.image);
+        }
+        
+        // Include the place ID and creator info
+        formData.append('creator', placeData.creator || userId);
+
+        const responseData = await sendRequest(
+            `http://localhost:5000/api/places/${placeData.id}`, // Use the place ID in the URL
+            'PATCH', // Use PATCH for updates
+            {
+                Authorization: 'Bearer ' + auth.token
+            },
+            formData
+        );
+
+        console.log('Response from server:', responseData);
+
+        // Refresh the places list and close modal
+        props.fetchPlaces();
+        setShowEditModal(false);
+        showFeedback('Place successfully updated!', 'success');
+
+    } catch (err) {
+        console.error('Error updating place:', err);
+        showFeedback('Failed to update place. Please try again.', 'error');
+    }
+};
   
   const confirmDeleteHandler = async () => {
     setShowConfirmModal(false);
@@ -65,6 +142,13 @@ const PlaceItem = props => {
           <Map center={props.coordinates} zoom={16}></Map>
         </div>
       </Modal>
+      <FeedbackPopup
+                visible={feedback.visible}
+                message={feedback.message}
+                type={feedback.type}
+                onClose={closeFeedback}
+                timeout={3000}
+            />
       
       {/* Delete Confirmation Modal */}
       <Modal 
@@ -88,6 +172,14 @@ const PlaceItem = props => {
       >
         <p className="text-mountain-dark">Are you sure you want to proceed and delete this place? This action cannot be undone.</p>
       </Modal>
+      <EditPlaceModal
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSubmit={handleEditPlace}
+        initialData={props}
+      >
+
+      </EditPlaceModal>
       
       {/* Error Message */}
       {error && (
@@ -196,6 +288,7 @@ const PlaceItem = props => {
                 {auth.isLoggedIn && (
                   <div className="flex gap-4">
                     <button 
+                      onClick={handleEditPlaceModalSHow}
                       to={`/places/${props.id}`}
                       className="text-mountain hover:text-forest flex items-center transition-colors" 
                       title="Edit Place"
