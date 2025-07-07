@@ -1,29 +1,35 @@
 import React, { useState, useRef } from 'react';
 
-
-const AddPlaceModal = ({ show, onClose, onSubmit }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [address, setAddress] = useState('');
+const AddProfilePictureModal = ({ show, onClose, onSubmit }) => {
   const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const fileInputRef = useRef(null);
 
-
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     
     // Check if form is valid
-    if (!title || !description || !address || !image) {
-     console.error('Please fill all fields and select an image');
+    if (!image) {
+      console.error('Please select an image');
       return;
     }
     
     // Log the data before submitting to verify
     console.log('Form data before submission:', {
-      title,
-      description,
-      address, 
       image: image ? {
         name: image.name,
         type: image.type,
@@ -32,17 +38,15 @@ const AddPlaceModal = ({ show, onClose, onSubmit }) => {
     });
     
     // Submit form data to parent component
-    onSubmit({ title, description, address, image });
+    onSubmit({ image });
     
     // Reset form after submission
     resetForm();
   };
 
   const resetForm = () => {
-    setTitle('');
-    setDescription('');
-    setAddress('');
     setImage(null);
+    setPreview(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -55,7 +59,7 @@ const AddPlaceModal = ({ show, onClose, onSubmit }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-forest-dark">Add New Place</h2>
+          <h2 className="text-xl font-semibold text-forest-dark">Add Profile Picture</h2>
           <button 
             onClick={() => {
               resetForm();
@@ -68,46 +72,28 @@ const AddPlaceModal = ({ show, onClose, onSubmit }) => {
         </div>
         
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-forest-dark mb-1">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full p-2 border border-mountain/30 rounded"
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-forest-dark mb-1">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2 border border-mountain/30 rounded h-24"
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-forest-dark mb-1">Address</label>
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full p-2 border border-mountain/30 rounded"
-              required
-            />
-          </div>
+          {/* Image Preview */}
+          {preview && (
+            <div className="mb-4 flex justify-center">
+              <div className="w-32 h-32 relative">
+                <img
+                  src={preview}
+                  alt="Profile preview"
+                  className="w-full h-full rounded-full object-cover border-4 border-white shadow-md"
+                />
+              </div>
+            </div>
+          )}
           
           <div className="mb-6">
             <label className="block text-forest-dark mb-1">Image</label>
             <input
+              ref={fileInputRef}
               type="file"
-              onChange={(e) =>{ 
-                setImage(e.target.files[0])}}
+              onChange={handleImageChange}
               className="w-full p-2 border border-mountain/30 rounded"
               accept="image/*"
+              required
             />
           </div>
           
@@ -126,7 +112,7 @@ const AddPlaceModal = ({ show, onClose, onSubmit }) => {
               type="submit"
               className="px-4 py-2 bg-forest text-white rounded hover:bg-forest-light"
             >
-              Add Place
+              Add Picture
             </button>
           </div>
         </form>
@@ -134,4 +120,5 @@ const AddPlaceModal = ({ show, onClose, onSubmit }) => {
     </div>
   );
 };
-export default AddPlaceModal;
+
+export default AddProfilePictureModal;
