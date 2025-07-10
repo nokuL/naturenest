@@ -10,6 +10,7 @@ import LoadingSpinner from '../../../users/components/UIElements/LoadingSpinner'
 import AddPlaceModal from './AddPlaceModal';
 import FeedbackPopup from '../../component/Feedback/Feedback';
 import { Link } from 'react-router-dom';
+import SearchModal from './SearchModal';
 
 
 function UserFeed() {
@@ -25,16 +26,26 @@ function UserFeed() {
         type: 'success'
     });
     const mountedRef = useRef(true);
+    const [showSearch, setShowSearch] = useState(false);
 
     const handleDelete = (id) => {
         setPlaces(prevPlaces => prevPlaces.filter(place => place.id !== id));
+       
         showFeedback('Place deleted successfully', 'success');
     }
+    const handleSearchClick = ()=>{
+        setShowSearch(true);
+    }
+    const handleSearchOnClose = () => {
+        setShowSearch(false);
+    }
+
+    const handleSearchResultSelect = (place) => {}
 
     useEffect(() => {
         // Set up the mounted ref
         mountedRef.current = true;
-        
+
         // Cleanup function
         return () => {
             mountedRef.current = false;
@@ -46,7 +57,7 @@ function UserFeed() {
     useEffect(() => {
         fetchPlaces();
     }, [userId, refresh]);
-    const handleMyProfile = () => {}
+    const handleMyProfile = () => { }
     const handleNewPlace = () => {
         setShowModal(true);
     };
@@ -127,11 +138,11 @@ function UserFeed() {
             showFeedback('Place successfully added!', 'success');
 
             // Update places state with the new place
-          /*   if (mountedRef.current) {
-                fetchPlaces();
-                setShowModal(false);
-                showFeedback('Place successfully added!', 'success');
-            } */
+            /*   if (mountedRef.current) {
+                  fetchPlaces();
+                  setShowModal(false);
+                  showFeedback('Place successfully added!', 'success');
+              } */
         } catch (err) {
             console.error('Error adding place:', err);
             showFeedback('Failed to add place. Please try again.', 'error');
@@ -154,7 +165,12 @@ function UserFeed() {
                 onClose={closeFeedback}
                 timeout={3000}
             />
-
+            <SearchModal
+            show={showSearch}
+            onClose={handleSearchOnClose}
+            onSelectPlace={handleSearchResultSelect}
+            places={[]}
+            />
             {/* Main container with responsive flexbox grid */}
             <div className="container mx-auto px-4 py-6 bg-gray-50">
                 <div className="flex flex-col lg:flex-row gap-6">
@@ -163,12 +179,32 @@ function UserFeed() {
                         <div className="mb-4">
                             <h2 className="text-xl font-semibold mb-3 text-forest-dark">Navigation</h2>
                             <ul className="space-y-2">
-                                <li className="p-2 bg-sky-light/20 text-forest rounded-md cursor-pointer hover:bg-sky-light/30 transition-colors">Feed</li>
-                                <li className="p-2 hover:bg-sky-light/20 rounded-md cursor-pointer transition-colors">        
-                                <Link to={`/users/profile/${userId}`} className="block w-full h-full">My Profile</Link>
+                                <li className="p-2 bg-sky-light/20 text-forest rounded-md cursor-pointer hover:bg-sky-light/30 transition-colors flex items-center gap-2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                    Search
                                 </li>
-                                <li className="p-2 hover:bg-sky-light/20 rounded-md cursor-pointer transition-colors">Favorites</li>
-                                <li className="p-2 hover:bg-sky-light/20 rounded-md cursor-pointer transition-colors">Explore</li>
+                                <li className="p-2 hover:bg-sky-light/20 rounded-md cursor-pointer transition-colors">
+                                    <Link to={`/users/profile/${userId}`} className="block w-full h-full flex items-center gap-2">
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                         Profile
+                                    </Link>
+                                </li>
+                                <li className="p-2 hover:bg-sky-light/20 rounded-md cursor-pointer transition-colors flex items-center gap-2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                    Favorites
+                                </li>
+                                <li className="p-2 hover:bg-sky-light/20 rounded-md cursor-pointer transition-colors flex items-center gap-2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Explore
+                                </li>
                             </ul>
                         </div>
                         <div className="border-t border-mountain/20 pt-4">
@@ -187,7 +223,7 @@ function UserFeed() {
 
                         {/* Simplified rendering of places */}
                         <div className="my-4">
-                            <PlacesList items={places} onDelete={handleDelete} fetchPlaces={fetchPlaces}/>
+                            <PlacesList items={places} onDelete={handleDelete} fetchPlaces={fetchPlaces} />
                         </div>
                     </div>
 
